@@ -1,9 +1,14 @@
 import os
+import sys
+
+# Add parent directory to sys.path so 'CLINIC.*' imports work when running directly
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
-from models import db, User
-from config import config
+from CLINIC.models import db, User
+from CLINIC.config import config
 
 csrf = CSRFProtect()
 login_manager = LoginManager()
@@ -29,12 +34,12 @@ def create_app(config_name='default'):
         return User.query.get(int(user_id))
 
     # Register blueprints
-    from routes.auth import auth_bp
-    from routes.public import public_bp
-    from routes.patient import patient_bp
-    from routes.admin import admin_bp
-    from routes.appointments import appointments_bp
-    from routes.api import api_bp
+    from CLINIC.routes.auth import auth_bp
+    from CLINIC.routes.public import public_bp
+    from CLINIC.routes.patient import patient_bp
+    from CLINIC.routes.admin import admin_bp
+    from CLINIC.routes.appointments import appointments_bp
+    from CLINIC.routes.api import api_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(public_bp)
@@ -78,7 +83,7 @@ def create_app(config_name='default'):
 def seed_database(app):
     """Seed with sample data."""
     with app.app_context():
-        from models import User, Patient, Service, Speciality, Testimonial, BlogPost
+        from CLINIC.models import User, Patient, Service, Speciality, Testimonial, BlogPost
         from datetime import date
         import random, string, json
 

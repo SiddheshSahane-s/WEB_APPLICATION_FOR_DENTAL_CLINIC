@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, abort
-from models import db, BlogPost, Speciality, Service, Testimonial
+from CLINIC.models import db, BlogPost, Speciality, Service, Testimonial
 
 public_bp = Blueprint('public', __name__)
 

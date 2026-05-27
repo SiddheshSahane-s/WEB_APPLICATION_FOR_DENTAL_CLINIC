@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime, date, timedelta
-from models import db, User, Patient, Appointment, Prescription, MedicalReport, Invoice, Payment, BlogPost, Notification, Service, Speciality, Testimonial, ActivityLog
+from CLINIC.models import db, User, Patient, Appointment, Prescription, MedicalReport, Invoice, Payment, BlogPost, Notification, Service, Speciality, Testimonial, ActivityLog
 import json, os, random, string
 from werkzeug.utils import secure_filename
 
@@ -552,7 +552,7 @@ def send_reminder(apt_id):
 @login_required
 @admin_required
 def settings():
-    from models import SystemSetting
+    from CLINIC.models import SystemSetting
     
     if request.method == 'POST':
         keys_to_update = ['TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_WHATSAPP_FROM']

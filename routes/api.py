@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app
 from flask_login import login_required, current_user
-from models import db, Appointment, Notification, Patient
+from CLINIC.models import db, Appointment, Notification, Patient
 from datetime import datetime
 import requests as http_requests
 
@@ -37,7 +37,7 @@ def send_whatsapp_reminder(apt):
     )
 
     # Try Twilio if configured
-    from models import SystemSetting
+    from CLINIC.models import SystemSetting
     
     def get_setting(key, fallback=None):
         setting = SystemSetting.query.filter_by(key=key).first()
@@ -89,6 +89,6 @@ def check_appointment():
 
 @api_bp.route('/services', methods=['GET'])
 def list_services():
-    from models import Service
+    from CLINIC.models import Service
     services = Service.query.filter_by(is_active=True).all()
     return jsonify([{'id': s.id, 'name': s.name, 'duration': s.duration_minutes, 'price': s.base_price} for s in services])

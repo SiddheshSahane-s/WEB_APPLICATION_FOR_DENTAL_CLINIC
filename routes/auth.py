@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
 import secrets
-from models import db, User, Patient, ActivityLog
+from CLINIC.models import db, User, Patient, ActivityLog
 
 auth_bp = Blueprint('auth', __name__)
 

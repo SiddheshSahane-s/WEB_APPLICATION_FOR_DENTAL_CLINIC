@@ -8,13 +8,43 @@
         </div>
         
         <div class="about-grid">
-            <div>
-                <img src="{{ url_for('static', filename='img/doctor.jpeg') }}" alt="Dr. Abhik Ray" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; margin-bottom: 20px;">
-                <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
-                    <img src="{{ url_for('static', filename='img/degree_1.jpeg') }}" alt="Degree 1" style="height: 120px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
-                    <img src="{{ url_for('static', filename='img/degree_2.jpeg') }}" alt="Degree 2" style="height: 120px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
-                    <img src="{{ url_for('static', filename='img/degree_3.jpeg') }}" alt="Degree 3" style="height: 120px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+            <div class="gallery-container">
+                <div style="position: relative; overflow: hidden; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); margin-bottom: 20px; width: 100%; height: 400px; background: var(--surface-color);">
+                    <img id="main-gallery-img" src="{{ url_for('static', filename='img/doctor.jpeg') }}" alt="Dr. Abhik Ray" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.4s ease-in-out;">
                 </div>
+                <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+                    <img src="{{ url_for('static', filename='img/doctor.jpeg') }}" class="gallery-thumb active" alt="Dr. Abhik Ray" style="height: 100px; width: 32%; flex: 1; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 2px solid var(--primary-color); cursor: pointer; transition: all 0.3s ease;">
+                    <img src="{{ url_for('static', filename='img/degree_1.jpeg') }}" class="gallery-thumb" alt="Degree 1" style="height: 100px; width: 32%; flex: 1; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 2px solid transparent; cursor: pointer; transition: all 0.3s ease;">
+                    <img src="{{ url_for('static', filename='img/degree_2.jpeg') }}" class="gallery-thumb" alt="Degree 2" style="height: 100px; width: 32%; flex: 1; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 2px solid transparent; cursor: pointer; transition: all 0.3s ease;">
+                    <img src="{{ url_for('static', filename='img/degree_3.jpeg') }}" class="gallery-thumb" alt="Degree 3" style="height: 100px; width: 32%; flex: 1; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 2px solid transparent; cursor: pointer; transition: all 0.3s ease;">
+                </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const mainImg = document.getElementById('main-gallery-img');
+                        const thumbs = document.querySelectorAll('.gallery-thumb');
+                        
+                        thumbs.forEach(thumb => {
+                            thumb.addEventListener('click', function() {
+                                // Remove active state
+                                thumbs.forEach(t => t.style.borderColor = 'transparent');
+                                // Add active state
+                                this.style.borderColor = 'var(--primary-color)';
+                                
+                                // Animate main image change
+                                mainImg.style.opacity = '0';
+                                mainImg.style.transform = 'scale(0.95)';
+                                
+                                setTimeout(() => {
+                                    mainImg.src = this.src;
+                                    mainImg.alt = this.alt;
+                                    mainImg.style.opacity = '1';
+                                    mainImg.style.transform = 'scale(1)';
+                                }, 300);
+                            });
+                        });
+                    });
+                </script>
             </div>
             <div>
                 <h3 style="margin-bottom: 20px; font-size: 2rem;">World-Class Dental Care in Kolkata</h3>
