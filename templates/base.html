@@ -67,13 +67,7 @@
             <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle theme">
                 <i class="fas fa-moon" id="themeIcon"></i>
             </button>
-            <div class="lang-switcher">
-                <button class="lang-btn" id="langBtn"><i class="fas fa-globe"></i> <span id="langLabel">EN</span></button>
-                <div class="lang-dropdown" id="langDropdown">
-                    <a href="#" onclick="switchLang('en')"><span class="flag">🇬🇧</span> English</a>
-                    <a href="#" onclick="switchLang('bn')"><span class="flag">🇮🇳</span> বাংলা</a>
-                </div>
-            </div>
+
             {% if current_user.is_authenticated %}
             <div class="nav-dropdown">
                 <button class="btn btn-outline-sm"><i class="fas fa-user-circle"></i> {{ current_user.name.split()[0] }}</button>
