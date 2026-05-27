@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="margin-bottom:20px;">
+    <h2>Activity Logs</h2>
+    <p class="text-muted">A full audit trail of all actions performed in the system.</p>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr><th>User</th><th>Action</th><th>Resource</th><th>IP Address</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+            {% for log in logs.items %}
+            <tr>
+                <td>
+                    {% if log.user %}
+                    <strong>{{ log.user.name }}</strong><br>
+                    <small class="text-muted">{{ log.user.role }}</small>
+                    {% else %}—{% endif %}
+                </td>
+                <td>{{ log.action }}</td>
+                <td>
+                    {% if log.resource %}
+                    <code>{{ log.resource }}{% if log.resource_id %} #{{ log.resource_id }}{% endif %}</code>
+                    {% else %}—{% endif %}
+                </td>
+                <td><small>{{ log.ip_address or '—' }}</small></td>
+                <td><small>{{ log.created_at.strftime('%d %b %Y, %H:%M') }}</small></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center" style="padding:40px;">
+                    <i class="fas fa-history" style="font-size:3rem;opacity:0.3;display:block;margin-bottom:10px;"></i>
+                    No activity logs recorded yet.
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if logs.pages > 1 %}
+    <div style="display:flex;gap:8px;padding:16px;justify-content:center;">
+        {% for pg in logs.iter_pages() %}{% if pg %}
+        <a href="?page={{ pg }}" class="btn-outline-sm {% if pg == logs.page %}active{% endif %}">{{ pg }}</a>
+        {% endif %}{% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

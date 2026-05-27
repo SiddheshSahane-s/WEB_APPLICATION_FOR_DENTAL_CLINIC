@@ -1,0 +1,48 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Manage Specialities</h2>
+    <a href="{{ url_for('admin.add_speciality') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Speciality</a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Icon/Image</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for spec in specialities %}
+                <tr>
+                    <td>
+                        {% if spec.image %}
+                        <img src="{{ url_for('static', filename=spec.image) }}" alt="{{ spec.name }}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+                        {% else %}
+                        <div style="width: 40px; height: 40px; border-radius: 8px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                            <i class="fas {{ spec.icon or 'fa-tooth' }}"></i>
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ spec.name }}</strong></td>
+                    <td><span class="badge badge-{{ 'completed' if spec.is_active else 'cancelled' }}">{{ 'Active' if spec.is_active else 'Inactive' }}</span></td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_speciality', id=spec.id) }}" class="btn-outline-sm"><i class="fas fa-edit"></i> Edit</a>
+                        <form method="POST" action="{{ url_for('admin.delete_speciality', id=spec.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this speciality?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn-outline-sm text-danger" style="border-color: var(--danger);"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center">No specialities found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

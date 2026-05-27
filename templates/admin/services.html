@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Manage Services & Pricing</h2>
+    <a href="{{ url_for('admin.add_service') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Service</a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Service Name</th>
+                    <th>Category</th>
+                    <th>Duration</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for svc in services %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 32px; height: 32px; border-radius: 6px; background: var(--bg-color); color: var(--primary); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas {{ svc.icon or 'fa-stethoscope' }}"></i>
+                            </div>
+                            <strong>{{ svc.name }}</strong>
+                        </div>
+                    </td>
+                    <td>{{ svc.category or '-' }}</td>
+                    <td>{{ svc.duration_minutes }} mins</td>
+                    <td>₹{{ svc.base_price }}</td>
+                    <td><span class="badge badge-{{ 'completed' if svc.is_active else 'cancelled' }}">{{ 'Active' if svc.is_active else 'Inactive' }}</span></td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_service', id=svc.id) }}" class="btn-outline-sm"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{{ url_for('admin.delete_service', id=svc.id) }}" style="display: inline;" onsubmit="return confirm('Delete this service?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn-outline-sm text-danger" style="border-color: var(--danger);"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center">No services found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

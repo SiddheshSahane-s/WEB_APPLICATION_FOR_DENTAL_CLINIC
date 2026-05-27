@@ -1,0 +1,70 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="margin-bottom:20px;">
+    <h2>User Management</h2>
+    <p class="text-muted">Manage user accounts and roles. Only super admins can access this page.</p>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Registered</th><th>Change Role</th></tr>
+            </thead>
+            <tbody>
+            {% for u in users %}
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:36px;height:36px;border-radius:50%;background:var(--primary-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">
+                            {{ u.name[0] }}
+                        </div>
+                        <strong>{{ u.name }}</strong>
+                    </div>
+                </td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.phone or '—' }}</td>
+                <td>
+                    {% if u.role == 'admin' %}
+                    <span class="badge badge-cancelled">Admin</span>
+                    {% elif u.role == 'dentist' %}
+                    <span class="badge badge-completed">Dentist</span>
+                    {% elif u.role == 'receptionist' %}
+                    <span class="badge badge-pending">Receptionist</span>
+                    {% else %}
+                    <span class="badge" style="background:var(--bg-color);color:var(--text-muted);">Patient</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if u.is_active %}
+                    <span class="badge badge-completed">Active</span>
+                    {% else %}
+                    <span class="badge badge-cancelled">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if u.id != current_user.id %}
+                    <form method="POST" action="{{ url_for('admin.change_role', user_id=u.id) }}" style="display:flex;gap:6px;align-items:center;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <select name="role" class="form-control" style="width:130px;padding:4px 8px;">
+                            <option value="patient" {% if u.role=='patient' %}selected{% endif %}>Patient</option>
+                            <option value="receptionist" {% if u.role=='receptionist' %}selected{% endif %}>Receptionist</option>
+                            <option value="dentist" {% if u.role=='dentist' %}selected{% endif %}>Dentist</option>
+                            <option value="admin" {% if u.role=='admin' %}selected{% endif %}>Admin</option>
+                        </select>
+                        <button type="submit" class="btn-outline-sm"><i class="fas fa-save"></i></button>
+                    </form>
+                    {% else %}
+                    <small class="text-muted">You</small>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="text-center">No users found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

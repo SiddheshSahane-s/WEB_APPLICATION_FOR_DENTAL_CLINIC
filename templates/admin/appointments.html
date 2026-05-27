@@ -1,0 +1,88 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <h2>Appointments</h2>
+    <div style="display:flex;gap:10px;">
+        <form method="GET" style="display:flex;gap:8px;align-items:center;">
+            <input type="date" name="date" class="form-control" value="{{ date_filter }}" style="width:160px;">
+            <select name="status" class="form-control" style="width:140px;">
+                <option value="">All Status</option>
+                <option value="pending" {% if status=='pending' %}selected{% endif %}>Pending</option>
+                <option value="confirmed" {% if status=='confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="completed" {% if status=='completed' %}selected{% endif %}>Completed</option>
+                <option value="cancelled" {% if status=='cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <button type="submit" class="btn btn-primary" style="padding:8px 16px;">Filter</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Code</th><th>Patient</th><th>Service</th><th>Date & Time</th><th>Type</th><th>Status</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for apt in appointments.items %}
+            <tr>
+                <td><code>{{ apt.appointment_code }}</code></td>
+                <td>
+                    {% if apt.patient %}
+                        <strong>{{ apt.patient.user.name }}</strong><br>
+                        <small>{{ apt.patient.patient_code }}</small>
+                    {% else %}
+                        <strong>{{ apt.guest_name }}</strong><br>
+                        <small class="text-muted">Guest — {{ apt.guest_phone }}</small>
+                    {% endif %}
+                </td>
+                <td>{{ apt.service.name if apt.service else 'N/A' }}</td>
+                <td>{{ apt.appointment_date.strftime('%d %b %Y') }}<br><small>{{ apt.appointment_time.strftime('%I:%M %p') }}</small></td>
+                <td><span class="badge badge-pending">{{ apt.appointment_type }}</span></td>
+                <td>
+                    <span class="badge badge-{{ apt.status }}">{{ apt.status.title() }}</span>
+                </td>
+                <td>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        {% if apt.status == 'pending' %}
+                        <form method="POST" action="{{ url_for('admin.appointment_action', apt_id=apt.id) }}" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="action" value="confirm">
+                            <button class="btn-outline-sm" style="color:var(--success);border-color:var(--success);">✓ Confirm</button>
+                        </form>
+                        {% endif %}
+                        {% if apt.status in ['pending','confirmed'] %}
+                        <form method="POST" action="{{ url_for('admin.appointment_action', apt_id=apt.id) }}" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="action" value="complete">
+                            <button class="btn-outline-sm">Complete</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.appointment_action', apt_id=apt.id) }}" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="action" value="cancel">
+                            <button class="btn-outline-sm text-danger" style="border-color:var(--danger);">Cancel</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="text-center">No appointments found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- Pagination -->
+    {% if appointments.pages > 1 %}
+    <div style="display:flex;gap:8px;padding:16px;justify-content:center;">
+        {% for p in appointments.iter_pages() %}
+            {% if p %}
+            <a href="?page={{ p }}&status={{ status }}&date={{ date_filter }}" class="btn-outline-sm {% if p == appointments.page %}active{% endif %}">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

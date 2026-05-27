@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('admin.specialities') }}" class="btn-outline-sm" style="margin-bottom: 15px;"><i class="fas fa-arrow-left"></i> Back</a>
+    <h2>Add New Speciality</h2>
+</div>
+
+<div class="card" style="max-width: 800px;">
+    <form method="POST" action="{{ url_for('admin.add_speciality') }}" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        
+        <div class="form-group">
+            <label class="form-label">Speciality Name</label>
+            <input type="text" name="name" class="form-control" required placeholder="e.g. Root Canal Treatment">
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="3" required placeholder="Brief description..."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">FontAwesome Icon Class</label>
+            <input type="text" name="icon" class="form-control" placeholder="e.g. fa-tooth">
+            <small class="text-muted">Used if no image is uploaded.</small>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Upload Image (Optional)</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+            <small class="text-muted">Upload an image to represent this speciality.</small>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Common Symptoms</label>
+            <textarea name="symptoms" class="form-control" rows="2" placeholder="Toothache, sensitivity..."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Treatment Methods</label>
+            <textarea name="treatment_methods" class="form-control" rows="2"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Frequently Asked Questions (FAQ)</label>
+            <textarea name="faq" class="form-control" rows="2"></textarea>
+        </div>
+        
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" name="is_active" id="is_active" checked>
+            <label for="is_active">Active (Visible on website)</label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Speciality</button>
+    </form>
+</div>
+{% endblock %}

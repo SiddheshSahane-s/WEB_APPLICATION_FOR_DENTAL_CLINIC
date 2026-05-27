@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment - MediDent{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div class="auth-card" style="margin: 0 auto; max-width: 600px;">
+            <div class="auth-header">
+                <h2>Book Appointment</h2>
+                <p>Schedule your visit with Dr. Abhik Ray</p>
+            </div>
+            
+            <form method="POST" action="{{ url_for('appointments.book') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="form-group">
+                    <label class="form-label">Select Service</label>
+                    <select name="service_id" class="form-control" required>
+                        <option value="">-- Choose Service --</option>
+                        {% for s in services %}
+                        <option value="{{ s.id }}">{{ s.name }} (₹{{ s.base_price }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" name="appointment_date" class="form-control" required min="{{ now.strftime('%Y-%m-%d') if now else '2024-01-01' }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time</label>
+                        <select name="appointment_time" class="form-control" required>
+                            <option value="">-- Select Time --</option>
+                            <option value="09:00">09:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="14:00">02:00 PM</option>
+                            <option value="15:00">03:00 PM</option>
+                            <option value="16:00">04:00 PM</option>
+                            <option value="17:00">05:00 PM</option>
+                            <option value="18:00">06:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+
+                {% if not current_user.is_authenticated %}
+                <hr style="border-color: var(--border-color); margin: 20px 0;">
+                <h4 style="margin-bottom: 15px;">Patient Details (Guest)</h4>
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="guest_name" class="form-control" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="guest_email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone (for WhatsApp)</label>
+                        <input type="tel" name="guest_phone" class="form-control" required placeholder="e.g. 9876543210">
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Want to track history? <a href="{{ url_for('auth.register') }}">Create an account</a> instead.</p>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label class="form-label">Symptoms / Notes (Optional)</label>
+                    <textarea name="symptoms" class="form-control" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

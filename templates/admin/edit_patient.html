@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="margin-bottom:20px;">
+    <a href="{{ url_for('admin.patients') }}" class="btn-outline-sm" style="margin-bottom:15px;"><i class="fas fa-arrow-left"></i> Back</a>
+    <h2>Edit Patient: {{ patient.user.name }}</h2>
+</div>
+<div class="card" style="max-width:700px;">
+    <form method="POST" action="{{ url_for('admin.edit_patient', patient_id=patient.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+            <div class="form-group"><label class="form-label">Full Name</label><input type="text" name="name" class="form-control" value="{{ patient.user.name }}" required></div>
+            <div class="form-group"><label class="form-label">Phone</label><input type="text" name="phone" class="form-control" value="{{ patient.user.phone }}"></div>
+            <div class="form-group"><label class="form-label">Age</label><input type="number" name="age" class="form-control" value="{{ patient.age }}"></div>
+            <div class="form-group"><label class="form-label">Gender</label>
+                <select name="gender" class="form-control">
+                    <option value="">Select</option>
+                    <option {% if patient.gender=='Male' %}selected{% endif %}>Male</option>
+                    <option {% if patient.gender=='Female' %}selected{% endif %}>Female</option>
+                    <option {% if patient.gender=='Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="form-group"><label class="form-label">Blood Group</label>
+                <select name="blood_group" class="form-control">
+                    {% for bg in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}
+                    <option {% if patient.blood_group==bg %}selected{% endif %}>{{ bg }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group"><label class="form-label">Address</label><textarea name="address" class="form-control" rows="2">{{ patient.address }}</textarea></div>
+        <div class="form-group"><label class="form-label">Allergies</label><input type="text" name="allergies" class="form-control" value="{{ patient.allergies }}"></div>
+        <div class="form-group"><label class="form-label">Medical History</label><textarea name="medical_history" class="form-control" rows="2">{{ patient.medical_history }}</textarea></div>
+        <div class="form-group"><label class="form-label">Dental History</label><textarea name="dental_history" class="form-control" rows="2">{{ patient.dental_history }}</textarea></div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Patient</button>
+    </form>
+</div>
+{% endblock %}

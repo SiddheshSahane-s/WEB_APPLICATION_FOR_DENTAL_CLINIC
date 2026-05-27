@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Our Specialities - MediDent{% endblock %}
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Dental <span class="gradient-text">Specialities</span></h2>
+            <p class="section-subtitle">Comprehensive dental care covering all your oral health needs under one roof.</p>
+        </div>
+        
+        <div class="specialities-grid">
+            {% set spec_colors = ['#0066CC','#00A3E0','#06B6D4','#0891B2','#0EA5E9','#38BDF8','#7DD3FC','#BAE6FD'] %}
+            {% for spec in specialities %}
+            <a href="{{ url_for('public.speciality_detail', slug=spec.slug) }}" class="spec-card">
+                <div class="spec-icon" style="background: {{ spec_colors[loop.index0 % 8] }}20; color: {{ spec_colors[loop.index0 % 8] }};">
+                    <i class="fas {{ spec.icon or 'fa-tooth' }}"></i>
+                </div>
+                <h3>{{ spec.name }}</h3>
+                <p>{{ spec.description[:80] }}...</p>
+                <span class="spec-link">Learn More <i class="fas fa-arrow-right"></i></span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

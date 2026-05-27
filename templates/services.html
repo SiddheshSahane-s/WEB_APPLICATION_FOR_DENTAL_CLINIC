@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Our Services - MediDent{% endblock %}
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Our <span class="gradient-text">Services</span> & Pricing</h2>
+            <p class="section-subtitle">Transparent pricing for premium dental care.</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+            {% for svc in services %}
+            <div class="card" style="display: flex; gap: 20px; align-items: center;">
+                <div style="width: 60px; height: 60px; border-radius: 10px; background: var(--bg-color); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; border: 1px solid var(--border-color);">
+                    <i class="fas {{ svc.icon or 'fa-stethoscope' }}"></i>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 5px;">{{ svc.name }}</h3>
+                    <div style="display: flex; gap: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                        <span><i class="fas fa-clock"></i> {{ svc.duration_minutes }} mins</span>
+                        <span><i class="fas fa-rupee-sign"></i> {{ svc.base_price }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

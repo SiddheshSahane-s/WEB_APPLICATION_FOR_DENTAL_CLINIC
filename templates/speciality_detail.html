@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ speciality.name }} - MediDent{% endblock %}
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+                <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 20px;">
+                    <i class="fas {{ speciality.icon or 'fa-tooth' }}"></i>
+                </div>
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">{{ speciality.name }}</h2>
+                <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 30px;">{{ speciality.description }}</p>
+                <a href="{{ url_for('appointments.book') }}" class="btn btn-primary"><i class="fas fa-calendar-plus"></i> Book Consultation</a>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3><i class="fas fa-notes-medical text-primary"></i> Symptoms</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">{{ speciality.symptoms }}</p>
+                </div>
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3><i class="fas fa-stethoscope text-primary"></i> Treatment Methods</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">{{ speciality.treatment_methods }}</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-question-circle text-primary"></i> Frequently Asked Questions</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">{{ speciality.faq }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

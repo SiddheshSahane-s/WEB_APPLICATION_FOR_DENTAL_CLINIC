@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}My Reports - MediDent{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:120px;">
+    <div class="container">
+        <h2 class="section-title" style="margin-bottom:25px;">Medical <span class="gradient-text">Reports</span></h2>
+        {% if reports %}
+        <div style="display:flex;flex-direction:column;gap:16px;">
+            {% for report in reports %}
+            <div class="card" style="padding:20px;display:flex;align-items:center;gap:20px;">
+                <div style="width:55px;height:55px;border-radius:12px;background:var(--primary-light,#e8f4fd);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">
+                    {% if report.report_type == 'xray' %}<i class="fas fa-x-ray"></i>
+                    {% elif report.report_type == 'scan' %}<i class="fas fa-radiation"></i>
+                    {% else %}<i class="fas fa-file-medical"></i>{% endif %}
+                </div>
+                <div style="flex:1;">
+                    <h4 style="margin:0 0 4px;">{{ report.title }}</h4>
+                    <p class="text-muted" style="margin:0;font-size:.9rem;">
+                        <span style="text-transform:capitalize;">{{ report.report_type or 'Report' }}</span> &nbsp;|&nbsp;
+                        <i class="fas fa-calendar" style="margin-right:4px;"></i>{{ report.report_date.strftime('%d %b %Y') if report.report_date else '' }}
+                    </p>
+                    {% if report.notes %}<p style="margin-top:6px;font-size:.85rem;color:var(--text-muted);">{{ report.notes }}</p>{% endif %}
+                </div>
+                {% if report.file_path %}
+                <a href="/static/{{ report.file_path }}" target="_blank" class="btn btn-outline" style="padding:8px 16px;flex-shrink:0;">
+                    <i class="fas fa-download"></i> Download
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card" style="text-align:center;padding:60px 20px;">
+            <i class="fas fa-file-medical-alt" style="font-size:3rem;color:var(--primary);opacity:.5;margin-bottom:15px;display:block;"></i>
+            <h3>No Reports Uploaded</h3>
+            <p class="text-muted">Your X-rays and medical reports uploaded by the clinic will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

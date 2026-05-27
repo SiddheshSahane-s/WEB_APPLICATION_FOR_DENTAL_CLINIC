@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="{% block meta_description %}MediDent Multispeciality Dental Clinic - Premium dental care by Dr. Abhik Ray in Kolkata{% endblock %}"/>
+    <title>{% block title %}MediDent Dental Clinic - Dr. Abhik Ray{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<!-- Loading Overlay -->
+<div id="loader" class="loader-overlay">
+    <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container" class="toast-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="toast toast-{{ category }} show" role="alert">
+            <span class="toast-icon">
+                {% if category == 'success' %}<i class="fas fa-check-circle"></i>
+                {% elif category == 'error' %}<i class="fas fa-times-circle"></i>
+                {% elif category == 'info' %}<i class="fas fa-info-circle"></i>
+                {% else %}<i class="fas fa-exclamation-circle"></i>{% endif %}
+            </span>
+            <span class="toast-msg">{{ message }}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+        </div>
+        {% endfor %}
+    {% endwith %}
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="{{ url_for('public.index') }}" class="nav-brand">
+            <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="MediDent Logo" style="height: 40px; border-radius: 8px;">
+            <div class="nav-brand-text">
+                <span class="brand-main">MediDent</span>
+                <span class="brand-sub">Multispeciality Dental Clinic</span>
+            </div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="{{ url_for('public.index') }}" class="nav-link {% if request.endpoint == 'public.index' %}active{% endif %}">Home</a></li>
+            <li><a href="{{ url_for('public.about') }}" class="nav-link {% if request.endpoint == 'public.about' %}active{% endif %}">About</a></li>
+            <li class="nav-dropdown">
+                <a class="nav-link {% if request.endpoint and 'specialit' in request.endpoint %}active{% endif %}">Specialities <i class="fas fa-chevron-down"></i></a>
+                <div class="dropdown-menu">
+                    <a href="{{ url_for('public.specialities') }}"><i class="fas fa-th-large"></i> All Specialities</a>
+                    <a href="{{ url_for('public.speciality_detail', slug='root-canal-treatment') }}"><i class="fas fa-circle-half-stroke"></i> Root Canal</a>
+                    <a href="{{ url_for('public.speciality_detail', slug='dental-implants') }}"><i class="fas fa-circle-dot"></i> Dental Implants</a>
+                    <a href="{{ url_for('public.speciality_detail', slug='teeth-whitening') }}"><i class="fas fa-star"></i> Teeth Whitening</a>
+                    <a href="{{ url_for('public.speciality_detail', slug='braces-orthodontics') }}"><i class="fas fa-grip-lines"></i> Braces</a>
+                    <a href="{{ url_for('public.speciality_detail', slug='cosmetic-dentistry') }}"><i class="fas fa-smile"></i> Cosmetic</a>
+                </div>
+            </li>
+            <li><a href="{{ url_for('public.services') }}" class="nav-link {% if request.endpoint == 'public.services' %}active{% endif %}">Services</a></li>
+            <li><a href="{{ url_for('public.blog') }}" class="nav-link {% if request.endpoint and 'blog' in request.endpoint %}active{% endif %}">Blog</a></li>
+            <li><a href="{{ url_for('public.contact') }}" class="nav-link {% if request.endpoint == 'public.contact' %}active{% endif %}">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle theme">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <div class="lang-switcher">
+                <button class="lang-btn" id="langBtn"><i class="fas fa-globe"></i> <span id="langLabel">EN</span></button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <a href="#" onclick="switchLang('en')"><span class="flag">🇬🇧</span> English</a>
+                    <a href="#" onclick="switchLang('bn')"><span class="flag">🇮🇳</span> বাংলা</a>
+                </div>
+            </div>
+            {% if current_user.is_authenticated %}
+            <div class="nav-dropdown">
+                <button class="btn btn-outline-sm"><i class="fas fa-user-circle"></i> {{ current_user.name.split()[0] }}</button>
+                <div class="dropdown-menu dropdown-right">
+                    {% if current_user.role == 'patient' %}
+                    <a href="{{ url_for('patient.dashboard') }}"><i class="fas fa-tachometer-alt"></i> My Dashboard</a>
+                    <a href="{{ url_for('patient.appointments') }}"><i class="fas fa-calendar"></i> Appointments</a>
+                    <a href="{{ url_for('patient.prescriptions') }}"><i class="fas fa-pills"></i> Prescriptions</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-sm"><i class="fas fa-sign-in-alt"></i> Login</a>
+            {% endif %}
+            <a href="{{ url_for('appointments.book') }}" class="btn btn-primary-sm pulse-btn"><i class="fas fa-calendar-plus"></i> Book Now</a>
+            <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-wave">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--footer-bg)"/></svg>
+    </div>
+    <div class="footer-body">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fas fa-tooth"></i>
+                    <div>
+                        <div class="footer-brand-name">MediDent</div>
+                        <div class="footer-brand-sub">Multispeciality Dental Clinic</div>
+                    </div>
+                </div>
+                <p>Premium dental care with compassion. Dr. Abhik Ray and team are committed to your oral health.</p>
+                <div class="footer-social">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('public.about') }}">About Dr. Abhik Ray</a></li>
+                    <li><a href="{{ url_for('public.specialities') }}">Our Specialities</a></li>
+                    <li><a href="{{ url_for('public.services') }}">Services</a></li>
+                    <li><a href="{{ url_for('appointments.book') }}">Book Appointment</a></li>
+                    <li><a href="{{ url_for('public.blog') }}">Health Blog</a></li>
+                    <li><a href="{{ url_for('public.contact') }}">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Specialities</h4>
+                <ul>
+                    <li><a href="{{ url_for('public.speciality_detail', slug='root-canal-treatment') }}">Root Canal</a></li>
+                    <li><a href="{{ url_for('public.speciality_detail', slug='dental-implants') }}">Dental Implants</a></li>
+                    <li><a href="{{ url_for('public.speciality_detail', slug='teeth-whitening') }}">Teeth Whitening</a></li>
+                    <li><a href="{{ url_for('public.speciality_detail', slug='braces-orthodontics') }}">Braces</a></li>
+                    <li><a href="{{ url_for('public.speciality_detail', slug='cosmetic-dentistry') }}">Cosmetic Dentistry</a></li>
+                    <li><a href="{{ url_for('public.speciality_detail', slug='pediatric-dentistry') }}">Pediatric Dentistry</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact & Timings</h4>
+                <div class="footer-contact">
+                    <p><i class="fas fa-map-marker-alt"></i> {{ CLINIC_ADDRESS }}</p>
+                    <p><i class="fas fa-phone"></i> <a href="tel:{{ CLINIC_PHONE }}">{{ CLINIC_PHONE }}</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:{{ CLINIC_EMAIL }}">{{ CLINIC_EMAIL }}</a></p>
+                    <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/{{ WHATSAPP_NUMBER }}">WhatsApp Us</a></p>
+                </div>
+                <div class="footer-hours">
+                    <p><i class="fas fa-clock"></i> <strong>Clinic Hours</strong></p>
+                    <p>Mon–Sat: 9:00 AM – 8:00 PM</p>
+                    <p>Sunday: 10:00 AM – 2:00 PM</p>
+                    <p class="emergency-tag"><i class="fas fa-ambulance"></i> Emergency: 24/7</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {{ now.year if now else 2025 }} MediDent Multispeciality Dental Clinic. All rights reserved.</p>
+            <p>Designed with <i class="fas fa-heart text-danger"></i> for Dr. Abhik Ray</p>
+        </div>
+    </div>
+</footer>
+
+<!-- WhatsApp Float Button -->
+<a href="https://wa.me/{{ WHATSAPP_NUMBER }}?text=Hello%20MediDent%2C%20I%20want%20to%20book%20an%20appointment."
+   class="whatsapp-float" target="_blank" title="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+    <span class="whatsapp-tooltip">Chat with us!</span>
+</a>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTop" title="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

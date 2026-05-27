@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="margin-bottom:20px;">
+    <h2><i class="fas fa-cogs"></i> System Settings</h2>
+    <p class="text-muted">Configure third-party integrations and system variables.</p>
+</div>
+
+<div class="card" style="max-width:800px;">
+    <h3 style="border-bottom:1px solid var(--border-color);padding-bottom:10px;margin-bottom:20px;"><i class="fab fa-whatsapp" style="color:#25D366;"></i> Twilio WhatsApp Integration</h3>
+    <form method="POST" action="{{ url_for('admin.settings') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        
+        <div class="form-group">
+            <label class="form-label">Twilio Account SID</label>
+            <input type="text" name="TWILIO_ACCOUNT_SID" class="form-control" value="{{ settings.TWILIO_ACCOUNT_SID or '' }}" placeholder="e.g. ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+            <small class="text-muted">Find this in your Twilio Console dashboard.</small>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Twilio Auth Token</label>
+            <input type="password" name="TWILIO_AUTH_TOKEN" class="form-control" value="{{ settings.TWILIO_AUTH_TOKEN or '' }}" placeholder="Leave blank to keep existing token">
+            <small class="text-muted">For security, existing tokens are not shown. Entering a new value will overwrite the old one.</small>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Twilio WhatsApp Sender Number</label>
+            <input type="text" name="TWILIO_WHATSAPP_FROM" class="form-control" value="{{ settings.TWILIO_WHATSAPP_FROM or '' }}" placeholder="e.g. whatsapp:+14155238886">
+            <small class="text-muted">Must include 'whatsapp:' prefix.</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+    </form>
+</div>
+{% endblock %}

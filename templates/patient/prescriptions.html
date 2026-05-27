@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}My Prescriptions - MediDent{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:120px;">
+    <div class="container">
+        <h2 class="section-title" style="margin-bottom:25px;">My <span class="gradient-text">Prescriptions</span></h2>
+        {% if prescriptions %}
+        <div style="display:flex;flex-direction:column;gap:16px;">
+            {% for rx in prescriptions %}
+            <div class="card" style="padding:24px;">
+                <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:10px;margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid var(--border-color);">
+                    <div>
+                        <code>{{ rx.prescription_code }}</code>
+                        <p style="margin:5px 0 0;color:var(--text-muted);font-size:.9rem;"><i class="fas fa-calendar" style="margin-right:6px;"></i>{{ rx.created_at.strftime('%d %B %Y') }}</p>
+                    </div>
+                    {% if rx.follow_up_date %}
+                    <span class="badge badge-pending"><i class="fas fa-clock" style="margin-right:5px;"></i>Follow-up: {{ rx.follow_up_date.strftime('%d %b %Y') }}</span>
+                    {% endif %}
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                    <div>
+                        <h5 style="color:var(--primary);margin-bottom:8px;"><i class="fas fa-stethoscope"></i> Diagnosis</h5>
+                        <p style="margin:0;">{{ rx.diagnosis or '—' }}</p>
+                    </div>
+                    <div>
+                        <h5 style="color:var(--primary);margin-bottom:8px;"><i class="fas fa-pills"></i> Medications</h5>
+                        <pre style="margin:0;font-family:inherit;white-space:pre-wrap;font-size:.9rem;">{{ rx.medications or '—' }}</pre>
+                    </div>
+                </div>
+                {% if rx.instructions %}
+                <div style="margin-top:15px;padding-top:15px;border-top:1px solid var(--border-color);">
+                    <h5 style="color:var(--primary);margin-bottom:8px;"><i class="fas fa-clipboard-list"></i> Instructions</h5>
+                    <p style="margin:0;">{{ rx.instructions }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card" style="text-align:center;padding:60px 20px;">
+            <i class="fas fa-prescription-bottle" style="font-size:3rem;color:var(--primary);opacity:.5;margin-bottom:15px;display:block;"></i>
+            <h3>No Prescriptions Yet</h3>
+            <p class="text-muted">Your prescriptions from Dr. Abhik Ray will appear here after your consultation.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

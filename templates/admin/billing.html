@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <h2>Billing & Invoices</h2>
+    <a href="{{ url_for('admin.add_invoice') }}" class="btn btn-primary"><i class="fas fa-plus"></i> New Invoice</a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+    <div class="card" style="display:flex;align-items:center;gap:15px;padding:20px;">
+        <div style="width:50px;height:50px;border-radius:12px;background:#00A3E020;color:#00A3E0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;"><i class="fas fa-check-circle"></i></div>
+        <div><p class="text-muted" style="margin:0;font-size:.85rem;">Total Collected</p><h3 style="margin:0;color:var(--success);">₹{{ "%.2f"|format(total_paid) }}</h3></div>
+    </div>
+    <div class="card" style="display:flex;align-items:center;gap:15px;padding:20px;">
+        <div style="width:50px;height:50px;border-radius:12px;background:#FF444420;color:#FF4444;display:flex;align-items:center;justify-content:center;font-size:1.4rem;"><i class="fas fa-clock"></i></div>
+        <div><p class="text-muted" style="margin:0;font-size:.85rem;">Outstanding</p><h3 style="margin:0;color:var(--danger);">₹{{ "%.2f"|format(total_unpaid) }}</h3></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Invoice #</th><th>Patient</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for inv in invoices.items %}
+            <tr>
+                <td><code>{{ inv.invoice_number }}</code></td>
+                <td>
+                    {% if inv.patient %}{{ inv.patient.user.name }}{% else %}<span class="text-muted">—</span>{% endif %}
+                </td>
+                <td><strong>₹{{ "%.2f"|format(inv.total) }}</strong></td>
+                <td><span class="badge badge-{{ 'completed' if inv.status=='paid' else ('pending' if inv.status=='unpaid' else inv.status) }}">{{ inv.status.title() }}</span></td>
+                <td>{{ inv.created_at.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if inv.status == 'unpaid' %}
+                    <form method="POST" action="{{ url_for('admin.mark_paid', inv_id=inv.id) }}" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <select name="method" class="form-control" style="display:inline;width:90px;padding:4px;">
+                            <option value="cash">Cash</option><option value="card">Card</option><option value="upi">UPI</option>
+                        </select>
+                        <button type="submit" class="btn-outline-sm" style="color:var(--success);border-color:var(--success);">Mark Paid</button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted">{{ inv.payment_method or '-' }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="text-center">No invoices found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if invoices.pages > 1 %}
+    <div style="display:flex;gap:8px;padding:16px;justify-content:center;">
+        {% for pg in invoices.iter_pages() %}{% if pg %}
+        <a href="?page={{ pg }}" class="btn-outline-sm {% if pg == invoices.page %}active{% endif %}">{{ pg }}</a>
+        {% endif %}{% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

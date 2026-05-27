@@ -1,0 +1,93 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="margin-bottom:20px;">
+    <a href="{{ url_for('admin.patients') }}" class="btn-outline-sm" style="margin-bottom:15px;"><i class="fas fa-arrow-left"></i> Back to Patients</a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;align-items:start;">
+    <!-- Patient Card -->
+    <div>
+        <div class="card" style="text-align:center;padding:30px 20px;">
+            <div style="width:80px;height:80px;border-radius:50%;background:var(--primary-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 15px;">
+                {{ patient.user.name[0] }}
+            </div>
+            <h3>{{ patient.user.name }}</h3>
+            <p class="text-muted" style="margin:4px 0;">{{ patient.user.email }}</p>
+            <code>{{ patient.patient_code }}</code>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;text-align:left;">
+                <div><small class="text-muted">Age</small><p><strong>{{ patient.age or '-' }}</strong></p></div>
+                <div><small class="text-muted">Gender</small><p><strong>{{ patient.gender or '-' }}</strong></p></div>
+                <div><small class="text-muted">Blood Group</small><p><strong>{{ patient.blood_group or '-' }}</strong></p></div>
+                <div><small class="text-muted">Phone</small><p><strong>{{ patient.user.phone or '-' }}</strong></p></div>
+            </div>
+            <div style="margin-top:15px;text-align:left;">
+                <small class="text-muted">Allergies</small>
+                <p>{{ patient.allergies or 'None' }}</p>
+            </div>
+            <a href="{{ url_for('admin.edit_patient', patient_id=patient.id) }}" class="btn btn-primary" style="margin-top:15px;width:100%;"><i class="fas fa-edit"></i> Edit Patient</a>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div>
+        <!-- Appointments -->
+        <div class="card" style="margin-bottom:20px;">
+            <h4 style="margin-bottom:15px;"><i class="fas fa-calendar"></i> Appointments ({{ appointments|length }})</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Code</th><th>Date</th><th>Service</th><th>Status</th></tr></thead>
+                    <tbody>
+                    {% for apt in appointments %}
+                    <tr>
+                        <td><code>{{ apt.appointment_code }}</code></td>
+                        <td>{{ apt.appointment_date.strftime('%d %b %Y') }}</td>
+                        <td>{{ apt.service.name if apt.service else '-' }}</td>
+                        <td><span class="badge badge-{{ apt.status }}">{{ apt.status.title() }}</span></td>
+                    </tr>
+                    {% else %}<tr><td colspan="4" class="text-center">No appointments</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Invoices -->
+        <div class="card" style="margin-bottom:20px;">
+            <h4 style="margin-bottom:15px;"><i class="fas fa-file-invoice"></i> Invoices ({{ invoices|length }})</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Invoice #</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                    {% for inv in invoices %}
+                    <tr>
+                        <td><code>{{ inv.invoice_number }}</code></td>
+                        <td>₹{{ inv.total }}</td>
+                        <td><span class="badge badge-{{ 'completed' if inv.status=='paid' else 'pending' }}">{{ inv.status.title() }}</span></td>
+                        <td>{{ inv.created_at.strftime('%d %b %Y') }}</td>
+                    </tr>
+                    {% else %}<tr><td colspan="4" class="text-center">No invoices</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Prescriptions -->
+        <div class="card">
+            <h4 style="margin-bottom:15px;"><i class="fas fa-pills"></i> Prescriptions ({{ prescriptions|length }})</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Code</th><th>Diagnosis</th><th>Date</th></tr></thead>
+                    <tbody>
+                    {% for rx in prescriptions %}
+                    <tr>
+                        <td><code>{{ rx.prescription_code }}</code></td>
+                        <td>{{ rx.diagnosis[:60] if rx.diagnosis else '-' }}...</td>
+                        <td>{{ rx.created_at.strftime('%d %b %Y') }}</td>
+                    </tr>
+                    {% else %}<tr><td colspan="3" class="text-center">No prescriptions</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

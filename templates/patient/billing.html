@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}My Billing - MediDent{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:120px;">
+    <div class="container">
+        <h2 class="section-title" style="margin-bottom:25px;">Billing & <span class="gradient-text">Invoices</span></h2>
+
+        <!-- Summary Cards -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:25px;">
+            <div class="card" style="padding:20px;text-align:center;">
+                <i class="fas fa-file-invoice-dollar" style="font-size:1.8rem;color:var(--primary);margin-bottom:8px;"></i>
+                <p class="text-muted" style="margin:0;font-size:.85rem;">Total Invoices</p>
+                <h3 style="margin:5px 0 0;color:var(--primary);">{{ invoices|length }}</h3>
+            </div>
+            <div class="card" style="padding:20px;text-align:center;">
+                <i class="fas fa-check-circle" style="font-size:1.8rem;color:var(--success,#22c55e);margin-bottom:8px;"></i>
+                <p class="text-muted" style="margin:0;font-size:.85rem;">Total Paid</p>
+                <h3 style="margin:5px 0 0;color:var(--success,#22c55e);">₹{{ "%.0f"|format(invoices|selectattr('status','eq','paid')|sum(attribute='total')) }}</h3>
+            </div>
+            <div class="card" style="padding:20px;text-align:center;">
+                <i class="fas fa-clock" style="font-size:1.8rem;color:var(--warning,#f59e0b);margin-bottom:8px;"></i>
+                <p class="text-muted" style="margin:0;font-size:.85rem;">Outstanding</p>
+                <h3 style="margin:5px 0 0;color:var(--warning,#f59e0b);">₹{{ "%.0f"|format(invoices|selectattr('status','eq','unpaid')|sum(attribute='total')) }}</h3>
+            </div>
+        </div>
+
+        {% if invoices %}
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Invoice #</th><th>Description</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                    {% for inv in invoices %}
+                    <tr>
+                        <td><code>{{ inv.invoice_number }}</code></td>
+                        <td>{{ (inv.items or 'Dental Services')[:60] }}</td>
+                        <td><strong>₹{{ "%.2f"|format(inv.total) }}</strong></td>
+                        <td>
+                            {% if inv.status == 'paid' %}
+                            <span class="badge badge-completed">Paid</span>
+                            {% else %}
+                            <span class="badge badge-pending">Unpaid</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ inv.created_at.strftime('%d %b %Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="card" style="text-align:center;padding:60px 20px;">
+            <i class="fas fa-file-invoice" style="font-size:3rem;color:var(--primary);opacity:.5;margin-bottom:15px;display:block;"></i>
+            <h3>No Invoices Yet</h3>
+            <p class="text-muted">Your billing history will appear here after your first treatment.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

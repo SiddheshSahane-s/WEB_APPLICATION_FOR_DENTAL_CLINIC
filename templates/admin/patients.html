@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <h2>Patients</h2>
+    <a href="{{ url_for('admin.add_patient') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Patient</a>
+</div>
+
+<form method="GET" style="margin-bottom:16px;display:flex;gap:10px;">
+    <input type="text" name="search" class="form-control" placeholder="Search by name, phone, email or code..." value="{{ search }}" style="max-width:400px;">
+    <button type="submit" class="btn btn-primary" style="padding:8px 20px;">Search</button>
+    {% if search %}<a href="{{ url_for('admin.patients') }}" class="btn-outline-sm" style="padding:8px 16px;">Clear</a>{% endif %}
+</form>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Code</th><th>Name</th><th>Phone</th><th>Gender</th><th>Blood</th><th>Registered</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for p in patients.items %}
+            <tr>
+                <td><code>{{ p.patient_code }}</code></td>
+                <td><strong>{{ p.user.name }}</strong><br><small class="text-muted">{{ p.user.email }}</small></td>
+                <td>{{ p.user.phone or '-' }}</td>
+                <td>{{ p.gender or '-' }}</td>
+                <td>{{ p.blood_group or '-' }}</td>
+                <td>{{ p.created_at.strftime('%d %b %Y') }}</td>
+                <td>
+                    <a href="{{ url_for('admin.patient_detail', patient_id=p.id) }}" class="btn-outline-sm"><i class="fas fa-eye"></i></a>
+                    <a href="{{ url_for('admin.edit_patient', patient_id=p.id) }}" class="btn-outline-sm"><i class="fas fa-edit"></i></a>
+                    {% if current_user.role == 'admin' %}
+                    <form method="POST" action="{{ url_for('admin.delete_patient', patient_id=p.id) }}" style="display:inline;" onsubmit="return confirm('Permanently delete this patient?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button class="btn-outline-sm text-danger" style="border-color:var(--danger);"><i class="fas fa-trash"></i></button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="text-center">No patients found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if patients.pages > 1 %}
+    <div style="display:flex;gap:8px;padding:16px;justify-content:center;">
+        {% for pg in patients.iter_pages() %}{% if pg %}
+        <a href="?page={{ pg }}&search={{ search }}" class="btn-outline-sm {% if pg == patients.page %}active{% endif %}">{{ pg }}</a>
+        {% endif %}{% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

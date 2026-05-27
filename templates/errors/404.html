@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found - MediDent{% endblock %}
+{% block content %}
+<section class="section text-center" style="padding-top: 150px; min-height: 80vh;">
+    <div class="container">
+        <h1 style="font-size: 6rem; color: var(--primary); margin-bottom: 20px;">404</h1>
+        <h2>Oops! Page Not Found</h2>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+        <a href="{{ url_for('public.index') }}" class="btn btn-primary">Return to Home</a>
+    </div>
+</section>
+{% endblock %}

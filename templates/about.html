@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}About Us - MediDent{% endblock %}
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">About <span class="gradient-text">MediDent</span> & Dr. Abhik Ray</h2>
+        </div>
+        
+        <div class="about-grid">
+            <div>
+                <img src="{{ url_for('static', filename='img/doctor.jpeg') }}" alt="Dr. Abhik Ray" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+                    <img src="{{ url_for('static', filename='img/degree_1.jpeg') }}" alt="Degree 1" style="height: 120px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                    <img src="{{ url_for('static', filename='img/degree_2.jpeg') }}" alt="Degree 2" style="height: 120px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                    <img src="{{ url_for('static', filename='img/degree_3.jpeg') }}" alt="Degree 3" style="height: 120px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                </div>
+            </div>
+            <div>
+                <h3 style="margin-bottom: 20px; font-size: 2rem;">World-Class Dental Care in Kolkata</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px;">At MediDent Multispeciality Dental Clinic, our mission is to provide the highest quality dental care in a comfortable, relaxing, and state-of-the-art environment. Founded by Dr. Abhik Ray, our clinic is equipped with the latest technology to ensure precise diagnostics and painless treatments.</p>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">We believe that a healthy smile is the foundation of overall well-being. Our team is dedicated to continuous education and adopting modern methodologies like digital dentistry and laser treatments.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="card text-center" style="padding: 15px;">
+                        <i class="fas fa-microscope text-primary" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <h4 style="font-size: 1rem;">Advanced Tech</h4>
+                    </div>
+                    <div class="card text-center" style="padding: 15px;">
+                        <i class="fas fa-heart-pulse text-primary" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <h4 style="font-size: 1rem;">Painless Care</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

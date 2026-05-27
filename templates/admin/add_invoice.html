@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div style="margin-bottom:20px;">
+    <a href="{{ url_for('admin.billing') }}" class="btn-outline-sm" style="margin-bottom:15px;"><i class="fas fa-arrow-left"></i> Back</a>
+    <h2>Create New Invoice</h2>
+</div>
+<div class="card" style="max-width:600px;">
+    <form method="POST" action="{{ url_for('admin.add_invoice') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group">
+            <label class="form-label">Patient</label>
+            <select name="patient_id" class="form-control" required>
+                <option value="">Select Patient</option>
+                {% for p in patients %}
+                <option value="{{ p.id }}">{{ p.user.name }} ({{ p.patient_code }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Items / Description</label>
+            <textarea name="items" class="form-control" rows="3" placeholder='e.g. Root Canal - ₹3000, X-Ray - ₹200'></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">
+            <div class="form-group"><label class="form-label">Subtotal (₹)</label><input type="number" step="0.01" name="subtotal" class="form-control" value="0"></div>
+            <div class="form-group"><label class="form-label">Discount (₹)</label><input type="number" step="0.01" name="discount" class="form-control" value="0"></div>
+            <div class="form-group"><label class="form-label">Total (₹)</label><input type="number" step="0.01" name="total" class="form-control" required value="0"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create Invoice</button>
+    </form>
+</div>
+{% endblock %}
