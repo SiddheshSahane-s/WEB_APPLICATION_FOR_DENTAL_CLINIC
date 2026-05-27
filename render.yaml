@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: medident-clinic
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn wsgi:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CSRF_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: medident-db
+          property: connectionString
+
+  - type: psql
+    name: medident-db
+    plan: free

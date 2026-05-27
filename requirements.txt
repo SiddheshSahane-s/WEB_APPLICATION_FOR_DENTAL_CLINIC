@@ -16,3 +16,5 @@ APScheduler
 cryptography
 email-validator
 bleach
+gunicorn
+psycopg2-binary
