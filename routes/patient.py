@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, current_app
 from flask_login import login_required, current_user
 from datetime import datetime, date
-from CLINIC.models import db, Patient, Appointment, Prescription, MedicalReport, Invoice, User
+from models import db, Patient, Appointment, Prescription, MedicalReport, Invoice, User
 import os
 
 patient_bp = Blueprint('patient', __name__, url_prefix='/patient')
